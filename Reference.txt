@@ -140,3 +140,21 @@ Next: Let's learn about connecting to some other rest api
 =========
 Next: Let's try Mutation 
 Next: Let's learn about connecting to MongoDB 
+Next: Debugging
+=====
+
+Monday: 
+-----
+Next: Authentication 
+Next: Handling Errors
+Next: React Project 
+
+Tuesday 
+-------
+Next: Caching 
+Next: Pagination 
+
+Wednesday
+------
+Next: Subscription 
+Next: TypeScript Project Completion
