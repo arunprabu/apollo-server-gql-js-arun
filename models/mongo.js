@@ -22,11 +22,9 @@ mongoose.connection.on("disconnected", () => {
 });
 
 // If the Node Process ends, close the connection
-process.on("SIGINT", () => {
-  mongoose.connection.close(() => {
-    console.log(`Mongoose Connection Closed When app terminated`);
-    process.exit(0);
-  });
+process.on("SIGINT", async () => {
+  await mongoose.connection.close();
+  process.exit(0);
 });
 
 export default mongoose;

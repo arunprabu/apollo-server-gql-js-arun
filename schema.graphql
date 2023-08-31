@@ -1,14 +1,9 @@
 type Query {
+  #this is comment for fellow developers to see
   hello: String
   age: Int
   posts: [Post]
   users: [User]
-}
-
-type Post {
-  id: ID!
-  title: String!
-  body: String!
 }
 
 type User {
@@ -16,4 +11,18 @@ type User {
   name: String!
   phone: String!
   email: String!
+}
+
+# The following one is for Documentation
+"""
+Represents Blog Post
+"""
+type Post {
+  """ID of the blog post"""
+  id: ID!
+  """Blog post title"""
+  title: String!
+  """Blog post article body with ellipsis"""
+  body: String!
+  user: User!
 }
