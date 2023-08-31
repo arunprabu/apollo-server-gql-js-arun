@@ -1,0 +1,135 @@
+Step1 
+  npm i @apollo/server graphql
+  npm i cors express express-jwt jsonwebtoken
+
+Step 2
+----
+in server.js file, have the following 
+
+  import cors from "cors";
+  import express from "express";
+
+  const PORT = 9000;
+
+  const app = express();
+  app.use(cors(), express.json());
+
+  app.listen({ port: PORT }, () => {
+    console.log(`GrqphQL Server is running on port http://localhost:${PORT}/graphql`);
+    console.log(
+      `Authentication REST API is running on http://localhost:${PORT}/api/login`
+    );
+  });
+
+Step 3: 
+-------
+  then, make the changes relevant to setting up Apollo Server 
+
+  import { ApolloServer } from "@apollo/server";   <===
+
+  import cors from "cors";
+  import express from "express";
+  // import { authMiddleware, handleLogin } from "./auth.js";
+
+  const PORT = 9000;
+
+  const app = express();
+  app.use(cors(), express.json());
+
+  // app.post("/login", handleLogin);
+  const apolloServer = new ApolloServer({    <===
+    typeDefs: '', 
+    resolvers: ''
+  });
+
+  await apolloServer.start();  <===
+
+  app.listen({ port: PORT }, () => {
+    console.log(`GrqphQL Server is running on port http://localhost:${PORT}/graphql`);
+    console.log(
+      `Authentication REST API is running on http://localhost:${PORT}/api/login`
+    );
+  });
+
+
+Step 4: 
+========
+  Let's setup express JS Middleware for ApolloServer 
+  
+  import { ApolloServer } from "@apollo/server";
+  import { expressMiddleware } from "@apollo/server/express4";     <===
+  import cors from "cors";
+  import express from "express";
+  // import { authMiddleware, handleLogin } from "./auth.js";
+
+  const PORT = 9000;
+
+  const app = express();
+  app.use(cors(), express.json());
+
+  // app.post("/login", handleLogin);
+  const apolloServer = new ApolloServer({
+    typeDefs: "",    <== needed in the next few steps 
+    resolvers: "",   <== needed in the next few steps 
+  });
+
+  await apolloServer.start();
+  app.use("/graphql", expressMiddleware(apolloServer));  <===
+
+  app.listen({ port: PORT }, () => {
+    console.log(`GrqphQL Server is running on port http://localhost:${PORT}/graphql`);
+    console.log(
+      `Authentication REST API is running on http://localhost:${PORT}/api/login`
+    );
+  });
+
+
+Step 5: 
+======
+  Let's start the server 
+  nodemon server.js 
+
+  It will show error, let's setuop the schema 
+  create schema.graphql file in the root level of the project with the following lines 
+
+  type Query {
+    hello: String
+  }
+
+Step 6:
+------
+  now it is time to use the schema.graphql file in our typeDefs
+
+  import { readFile } from "fs/promises";  <==
+  const typeDefs = await readFile('./schema.graphql', 'utf-8');   <== this one 
+
+  const apolloServer = new ApolloServer({
+    typeDefs: typeDefs,   <== this one 
+    resolvers: "",
+  });
+
+
+Step 7:
+====
+  finally, Let's setuop the resolvers also. 
+  create resolvers.js file with the following code 
+
+  import { resolvers } from "./resolvers.js";
+
+  ....
+  ....
+  ....
+
+  const apolloServer = new ApolloServer({
+    typeDefs: typeDefs,
+    resolvers: resolvers,
+  });
+
+
+======= 
+Step 8: 
+----
+  now start the Server 
+  nodemon server.js 
+
+====================================================
