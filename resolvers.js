@@ -17,6 +17,16 @@ export const resolvers = {
       console.log(result);
       return result.data;
     },
+    postById: async (parent, args) => {
+      console.log(parent);
+      console.log(args);
+      // let connect to third party rest api endpoint
+      const result = await axios.get(
+        "https://jsonplaceholder.typicode.com/posts/" + args.id
+      );
+      console.log(result);
+      return result.data;
+    },
     users: async () => {
       // Let's connect to MongoDB
       // creating DAO
@@ -50,11 +60,34 @@ export const resolvers = {
     THe following stuff will be part of the final result.. 
     you can also customize/ tranform other fields like id, title as well
   */
-  Post: { // This should match with the custom type we have in schema.graphql 
+  Post: {
+    // This should match with the custom type we have in schema.graphql
     // Further customizing select field
-    body: (post) => { // this is field in the custom type
+    body: (post) => {
+      // this is field in the custom type
       console.log(post.body);
       return post.body + "..."; // updating all body properties with '...'
+    },
+    user: (post) => {
+      console.log(post);
+      return {
+        id: post.userId,
+        name: "",
+        email: "",
+        phone: "",
+      };
+    },
+  },
+  Mutation: {
+    createPost: (parent, args) => {
+      // we can connect to db.. I am sending it directly from here
+      console.log(parent);
+      console.log(args);
+      return {
+        id: 9999,
+        title: args.title,
+        body: args.body,
+      };
     },
   },
 };

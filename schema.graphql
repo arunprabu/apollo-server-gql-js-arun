@@ -3,6 +3,7 @@ type Query {
   hello: String
   age: Int
   posts: [Post]
+  postById(id: Int): Post 
   users: [User]
 }
 
@@ -25,4 +26,9 @@ type Post {
   """Blog post article body with ellipsis"""
   body: String!
   user: User!
+}
+
+#Let's learn about mutation
+type Mutation {
+  createPost(title: String!, body: String!): Post
 }
