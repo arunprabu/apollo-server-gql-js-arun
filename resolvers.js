@@ -79,15 +79,21 @@ export const resolvers = {
     },
   },
   Mutation: {
-    createPost: (parent, args) => {
+    createPost: async (parent, args) => {
       // we can connect to db.. I am sending it directly from here
       console.log(parent);
-      console.log(args);
-      return {
-        id: 9999,
-        title: args.title,
-        body: args.body,
-      };
+      console.log(args); // this is req body
+      const result = await axios.post(
+        "https://jsonplaceholder.typicode.com/posts/",
+        args
+      );
+      // console.log(result);
+      return result.data;
+      // return {
+      //   id: 9999,
+      //   title: args.title,
+      //   body: args.body,
+      // };
     },
   },
 };
