@@ -136,6 +136,8 @@ Step 8:
 
 Next: Let's learn about documentation comments
 Next: Let's learn about connecting to some other rest api 
+Next: Aliases in GraphQL 
+Next: Fragments in GraphQL
 
 =========
 Next: Let's try Mutation 
