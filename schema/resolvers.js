@@ -11,12 +11,25 @@ export const resolvers = {
       return 20;
     },
     posts: async () => {
-      // let connect to third party rest api endpoint
-      const result = await axios.get(
-        "https://jsonplaceholder.typicode.com/posts"
-      );
-      console.log(result);
-      return result.data;
+      // // let connect to third party rest api endpoint
+      // const result = await axios.get(
+      //   "https://jsonplaceholder.typicode.com/posts"
+      // );
+      // console.log(result);
+      // return result.data;
+      //Let's handle error and customize it
+      try {
+        // let connect to third party rest api endpoint
+        const result = await axios.get(
+          "https://jsonplaceholder.typicode.com/posts897654"
+        );
+        console.log(result);
+        return result.data;
+      } catch (err) {
+        throw new GraphQLError("Unable to fetch posts. Try again later", {
+          extensions: { code: "UNABLE_TO_FETCH" },
+        });
+      }
     },
     postById: async (parent, args) => {
       console.log(parent);
