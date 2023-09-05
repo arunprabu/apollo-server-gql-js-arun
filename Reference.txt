@@ -156,9 +156,36 @@ Next: React Project
 Tuesday 
 -------
 Next: Caching 
+Next: Performance Tuning
+Next: Chrome extensions + VS Extensions
 Next: Pagination 
 
 Wednesday
 ------
 Next: Subscription 
 Next: TypeScript Project Completion
+
+
+Pagination
+=======
+  Types 
+
+  1. Offset Pagination
+      Disadv 
+      ---
+        after first set of result is loaded if new item is added in db, 
+        offset will show previous displayed result also 
+
+
+  2. Cursor Pagination
+
+
+====
+GraphQL Subscriptions 
+======
+  You can't do this in standalone apollo server. you need expressjs based app
+  
+  npm install ws graphql-ws 
+  
+
+

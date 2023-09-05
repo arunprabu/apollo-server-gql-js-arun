@@ -3,7 +3,7 @@ export const typeDefs = `#graphql
     #this is comment for fellow developers to see
     hello: String
     age: Int
-    posts: [Post]
+    posts(limit: Int!, offset: Int!): [Post]
     postById(id: Int): Post 
     users: [User]
   }

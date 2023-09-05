@@ -10,7 +10,7 @@ export const resolvers = {
     age: () => {
       return 20;
     },
-    posts: async () => {
+    posts: async (parent, {limit}) => {
       // // let connect to third party rest api endpoint
       // const result = await axios.get(
       //   "https://jsonplaceholder.typicode.com/posts"
@@ -19,10 +19,13 @@ export const resolvers = {
       // return result.data;
       //Let's handle error and customize it
       try {
+        let url =
+          "https://jsonplaceholder.typicode.com/posts?_sort=id&_order=desc";
+        if (limit) {
+          url += `&_limit=${limit}`;
+        }
         // let connect to third party rest api endpoint
-        const result = await axios.get(
-          "https://jsonplaceholder.typicode.com/posts897654"
-        );
+        const result = await axios.get(url);
         console.log(result);
         return result.data;
       } catch (err) {
@@ -34,7 +37,7 @@ export const resolvers = {
     postById: async (parent, args) => {
       console.log(parent);
       console.log(args);
-      
+
       //Let's handle error and customize it
       try {
         // let connect to third party rest api endpoint
@@ -45,13 +48,13 @@ export const resolvers = {
         return result.data;
       } catch (err) {
         throw new GraphQLError("No Post Found with id: " + args.id, {
-          extensions: { code: "NOT_FOUND" }
+          extensions: { code: "NOT_FOUND" },
         });
       }
     },
     users: async () => {
       // Let's connect to MongoDB
-      
+
       // saving to create a new document by folowing syntax of mongoose
       const result = await UserModel.find();
       console.log(result);
@@ -128,17 +131,17 @@ export const resolvers = {
         args
       );
       // console.log(result);
-      return 'Deleted Successfully!';
+      return "Deleted Successfully!";
     },
-    addUser: async (parent, {input}) => {
+    addUser: async (parent, { input }) => {
       console.log(input); // this is req body
       // Let's connect to MongoDB
       // creating DAO
       const userDao = new UserModel(input);
       // saving to create a new document by folowing syntax of mongoose
-      const result  = await userDao.save();
+      const result = await userDao.save();
       console.log(result);
       return result;
-    }
+    },
   },
 };
