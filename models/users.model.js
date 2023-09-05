@@ -10,7 +10,7 @@ const User = new Schema(
     phone: String,
     email: {
       type: String,
-      unique: true, // unique email
+      // unique: true, // unique email
       required: true, // mandatory field
     },
     createdBy: String,

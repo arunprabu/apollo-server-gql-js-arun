@@ -134,21 +134,23 @@ Step 8:
 
 ====================================================
 
-Next: Let's learn about documentation comments
-Next: Let's learn about connecting to some other rest api 
-Next: Aliases in GraphQL 
-Next: Fragments in GraphQL
+Next: Let's learn about documentation comments [DONE]
+Next: Let's learn about connecting to some other rest api [DONE]
+Next: Aliases in GraphQL [DONE]
+Next: Let's handle error and customize it [DONE]
+Next: Fragments in GraphQL 
 
 =========
-Next: Let's try Mutation 
-Next: Let's learn about connecting to MongoDB 
-Next: Debugging
+Next: Let's try Mutation [DONE]
+Next: Let's learn about connecting to MongoDB  [DONE]
+Next: Debugging [DONE]
+Next: Caching [DONE] fetchPolicy
 =====
 
 Monday: 
 -----
 Next: Authentication 
-Next: Handling Errors
+Next: Handling Errors [DONE]
 Next: React Project 
 
 Tuesday 

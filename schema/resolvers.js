@@ -1,5 +1,6 @@
 import axios from "axios";
-import User from "./models/users.model.js";
+import UserModel from "../models/users.model.js";
+import { GraphQLError } from "graphql";
 
 export const resolvers = {
   Query: {
@@ -20,26 +21,28 @@ export const resolvers = {
     postById: async (parent, args) => {
       console.log(parent);
       console.log(args);
-      // let connect to third party rest api endpoint
-      const result = await axios.get(
-        "https://jsonplaceholder.typicode.com/posts/" + args.id
-      );
-      console.log(result);
-      return result.data;
+      
+      //Let's handle error and customize it
+      try {
+        // let connect to third party rest api endpoint
+        const result = await axios.get(
+          "https://jsonplaceholder.typicode.com/posts/" + args.id
+        );
+        console.log(result);
+        return result.data;
+      } catch (err) {
+        throw new GraphQLError("No Post Found with id: " + args.id, {
+          extensions: { code: "NOT_FOUND" }
+        });
+      }
     },
     users: async () => {
       // Let's connect to MongoDB
-      // creating DAO
-      // const userDao = new User({
-      //   name: "John"
-      // });
-      // // saving to create a new document by folowing syntax of mongoose
-      // userDao.save((err, data) => {
-      //   if (!err) {
-      //     console.log(data);
-      //     return data;
-      //   }
-      // });
+      
+      // saving to create a new document by folowing syntax of mongoose
+      const result = await UserModel.find();
+      console.log(result);
+      return result;
     },
     // userById: async (parent, args) => {
     //   console.log(parent);
@@ -95,5 +98,34 @@ export const resolvers = {
       //   body: args.body,
       // };
     },
+    updatePost: async (parent, args) => {
+      // we can connect to db.. I am sending it directly from here
+      console.log(parent);
+      console.log(args); // this is req body
+      const result = await axios.put(
+        "https://jsonplaceholder.typicode.com/posts/" + args.id,
+        args
+      );
+      // console.log(result);
+      return result.data;
+    },
+    deletePost: async (parent, args) => {
+      const result = await axios.delete(
+        "https://jsonplaceholder.typicode.com/posts/" + args.id,
+        args
+      );
+      // console.log(result);
+      return 'Deleted Successfully!';
+    },
+    addUser: async (parent, {input}) => {
+      console.log(input); // this is req body
+      // Let's connect to MongoDB
+      // creating DAO
+      const userDao = new UserModel(input);
+      // saving to create a new document by folowing syntax of mongoose
+      const result  = await userDao.save();
+      console.log(result);
+      return result;
+    }
   },
 };
