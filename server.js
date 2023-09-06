@@ -7,11 +7,16 @@ import http from "http";
 import cors from "cors";
 import bodyParser from "body-parser";
 import { makeExecutableSchema } from "@graphql-tools/schema";
+import axios from "axios";
 import { WebSocketServer } from 'ws';
 import { useServer } from 'graphql-ws/lib/use/ws';
 
 import { typeDefs } from "./schema/typeDefs.js";
 import { resolvers } from "./schema/resolvers.js";
+
+import authRouter from"./routes/auth.js";
+import passport from './config/passport.config.js'; // setting up passport
+import { getAccount } from "./controllers/auth.controller.js";
 
 const PORT = 9000;
 // Required logic for integrating with Express
@@ -20,6 +25,15 @@ const app = express();
 // Below, we tell Apollo Server to "drain" this httpServer,
 // enabling our servers to shut down gracefully.
 const httpServer = http.createServer(app);
+
+// parse application/x-www-form-urlencoded -- only then you can get req.body onver post method
+app.use(bodyParser.urlencoded({ extended: false }));
+
+passport.initialize(); // setting up auth middleware
+
+app.use(cors());
+
+app.use("/api/auth", authRouter);
 
 const schema = makeExecutableSchema({ typeDefs, resolvers });
 
@@ -57,9 +71,19 @@ app.use(
   // expressMiddleware accepts the same arguments:
   // an Apollo Server instance and optional configuration options
   expressMiddleware(server, {
-    context: async ({ req }) => ({ token: req.headers.token }),
+    context: async ({ req, res }) => {
+      // Get the user token from the headers.
+      const token = req.headers.authorization || "";
+
+      // Try to retrieve a user with the token
+      const account = await getAccount(token);
+
+      // Add the user to the context
+      return { account };
+    },
   })
 );
+
 
 // Modified server startup
 await new Promise((resolve) => httpServer.listen({ port: PORT }, resolve));
