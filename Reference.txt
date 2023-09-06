@@ -190,5 +190,43 @@ GraphQL Subscriptions
   
   npm install ws graphql-ws graphql-subscriptions
 
+  In server side graphql app, do the following
+  in server.js ,
+    import { WebSocketServer } from 'ws';
+    import { useServer } from 'graphql-ws/lib/use/ws';
 
+    then, 
+    before the following line 
+      const server = new ApolloServer({ 
+        ...
+      })
+    
+    have the below code 
+      const wsServer = new WebSocketServer({
+        server: httpServer,
+        path: "/graphql",   // this should match with the graphql api endpoint
+      });
+
+    
+    then, inside new ApolloServer(....) logic, 
+      modify the following to close websocket when apollo server is shut down 
+
+    const server = new ApolloServer({
+      typeDefs,
+      resolvers,
+      plugins: [ApolloServerPluginDrainHttpServer({ httpServer }), { <==
+        async serverWillStart() {   <==
+          return {                  <==
+            async drainServer() {   <==
+              await wsServerCleanup.dispose(); <==
+            }
+          }
+        }
+      }],
+    });
+
+  Now, the base setup is done. 
+  Let's try working on Schema in typeDefs.js 
+  
+========
 

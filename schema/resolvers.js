@@ -1,6 +1,21 @@
 import axios from "axios";
 import UserModel from "../models/users.model.js";
 import { GraphQLError } from "graphql";
+import { PubSub } from "graphql-subscriptions";
+
+const pubSub = new PubSub();
+
+// related to subscription concept
+function startReportGeneration(name) {
+  setTimeout(() => {
+    pubSub.publish("REPORT_GENERATED", {
+      reportGenerated: {
+        name,
+        generatedAt: new Date().toString(),
+      }
+    });
+  }, 5000);
+}
 
 export const resolvers = {
   Query: {
@@ -53,32 +68,17 @@ export const resolvers = {
         .sort({ _id: 1 })
         .limit(limit)
         .exec();
-      
+
       return users;
     },
     // userById: async (parent, args) => {
-    //   console.log(parent);
-    //   console.log(args);
     //   // let connect to third party rest api endpoint
     //   const result = await axios.get(
     //     "https://jsonplaceholder.typicode.com/users/1"
     //   );
     //   console.log(result);
     //   return result.data;
-    // },
-    // photos: (_, { first, after }) => {
-    //   // Fetch users from the database,
-    //   // limit to `first` results, and
-    //   // filter where `createdAt` > `after`
-
-    //   // Return the connection data
-    //   return {
-    //     edges: [],
-    //     pageInfo: {
-    //       hasNextPage: true,
-    //     },
-    //   };
-    // },
+    // }
   },
   // The following is called Field Resolver fn
   /* Custom Type Post has id, title, body field. 
@@ -151,6 +151,19 @@ export const resolvers = {
       const result = await userDao.save();
       console.log(result);
       return result;
+    },
+    generateReport: async (_, { name }) => {
+      console.log("Report Generation Started. Please wait");
+      startReportGeneration(name);
+      return `Report Generation for ${name} Started. Please wait`;
+    },
+  },
+  Subscription: {
+    reportGenerated: {
+      subscribe: () => {
+        // async iterator
+        return pubSub.asyncIterator(["REPORT_GENERATED"]);
+      },
     },
   },
 };

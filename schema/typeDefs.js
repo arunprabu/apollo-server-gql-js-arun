@@ -35,6 +35,7 @@ export const typeDefs = `#graphql
     updatePost(id: ID!, title: String!, body: String!): Post
     deletePost(id: ID!): String,
     addUser(input: UserInput): User!
+    generateReport(name: String): String
   }
 
   input UserInput {
@@ -43,24 +44,14 @@ export const typeDefs = `#graphql
     phone: String!
   }
 
-  # the following has cursor pagination implemented
-  # type Photo {
-  #   id: ID!
-  #   title: String
-  # }
-
-  # type PageInfo {
-  #   hasNextPage: Boolean!
-  # }
-
-  # type PhotoEdge {
-  #   cursor: String!
-  #   node: Photo 
-  # }
-
-  # type PhotoConnection {
-  #   edges: [PhotoEdge!]!
-  #   pageInfo: PageInfo!
-  # }
+  type Report {
+    name: String!
+    generatedAt: String!
+  }
+  
+  #type should be Subscription
+  type Subscription {
+    reportGenerated: Report
+  }
 `;
 

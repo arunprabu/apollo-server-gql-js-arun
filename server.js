@@ -6,6 +6,10 @@ import express from "express";
 import http from "http";
 import cors from "cors";
 import bodyParser from "body-parser";
+import { makeExecutableSchema } from "@graphql-tools/schema";
+import { WebSocketServer } from 'ws';
+import { useServer } from 'graphql-ws/lib/use/ws';
+
 import { typeDefs } from "./schema/typeDefs.js";
 import { resolvers } from "./schema/resolvers.js";
 
@@ -17,20 +21,37 @@ const app = express();
 // enabling our servers to shut down gracefully.
 const httpServer = http.createServer(app);
 
+const schema = makeExecutableSchema({ typeDefs, resolvers });
+
+const wsServer = new WebSocketServer({
+  server: httpServer,
+  path: "/graphql",
+});
+
+const wsServerCleanup = useServer({ schema }, wsServer);
+
 // Same ApolloServer initialization as before, plus the drain plugin
 // for our httpServer.
 const server = new ApolloServer({
-  typeDefs,
-  resolvers,
-  plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
+  schema,
+  plugins: [ApolloServerPluginDrainHttpServer({ httpServer }), {
+    async serverWillStart() {
+      return {
+        async drainServer() {
+          await wsServerCleanup.dispose();
+        }
+      }
+    }
+  }],
 });
+
 // Ensure we wait for our server to start
 await server.start();
 
 // Set up our Express middleware to handle CORS, body parsing,
 // and our expressMiddleware function.
 app.use(
-  "/",
+  "/graphql",
   cors(),
   bodyParser.json(),
   // expressMiddleware accepts the same arguments:
@@ -43,12 +64,10 @@ app.use(
 // Modified server startup
 await new Promise((resolve) => httpServer.listen({ port: PORT }, resolve));
 
-console.log(`🚀 Server ready at http://localhost:9000/`);
-
 console.log(
   `GrqphQL Server is running on port http://localhost:${PORT}/graphql`
 );
 
-console.log(
-  `Authentication REST API is running on http://localhost:${PORT}/api/login`
-);
+// console.log(
+//   `Authentication REST API is running on http://localhost:${PORT}/api/login`
+// );
