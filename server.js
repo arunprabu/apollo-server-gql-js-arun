@@ -7,7 +7,6 @@ import http from "http";
 import cors from "cors";
 import bodyParser from "body-parser";
 import { makeExecutableSchema } from "@graphql-tools/schema";
-import axios from "axios";
 import { WebSocketServer } from 'ws';
 import { useServer } from 'graphql-ws/lib/use/ws';
 
@@ -75,10 +74,10 @@ app.use(
       // Get the user token from the headers.
       const token = req.headers.authorization || "";
 
-      // Try to retrieve a user with the token
+      // Try to retrieve an account with the token
       const account = await getAccount(token);
 
-      // Add the user to the context
+      // Add the account to the context
       return { account };
     },
   })
