@@ -10,7 +10,7 @@ export const resolvers = {
     age: () => {
       return 20;
     },
-    posts: async (parent, {limit}) => {
+    posts: async (parent, { limit }) => {
       // // let connect to third party rest api endpoint
       // const result = await axios.get(
       //   "https://jsonplaceholder.typicode.com/posts"
@@ -52,13 +52,14 @@ export const resolvers = {
         });
       }
     },
-    users: async () => {
-      // Let's connect to MongoDB
-
-      // saving to create a new document by folowing syntax of mongoose
-      const result = await UserModel.find();
-      console.log(result);
-      return result;
+    users: async (_, { cursor, limit = 2 }) => {
+      const query = cursor ? { _id: { $gt: cursor } } : {};
+      const users = await UserModel.find(query)
+        .sort({ _id: 1 })
+        .limit(limit)
+        .exec();
+      
+      return users;
     },
     // userById: async (parent, args) => {
     //   console.log(parent);
@@ -69,7 +70,20 @@ export const resolvers = {
     //   );
     //   console.log(result);
     //   return result.data;
-    // }
+    // },
+    // photos: (_, { first, after }) => {
+    //   // Fetch users from the database,
+    //   // limit to `first` results, and
+    //   // filter where `createdAt` > `after`
+
+    //   // Return the connection data
+    //   return {
+    //     edges: [],
+    //     pageInfo: {
+    //       hasNextPage: true,
+    //     },
+    //   };
+    // },
   },
   // The following is called Field Resolver fn
   /* Custom Type Post has id, title, body field. 
@@ -145,3 +159,5 @@ export const resolvers = {
     },
   },
 };
+
+/* The query for the pagination will be like the following */

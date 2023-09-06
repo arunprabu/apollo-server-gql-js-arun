@@ -178,6 +178,9 @@ Pagination
 
 
   2. Cursor Pagination
+      Cursor pagination is a common technique to paginate data in GraphQL APIs.
+      It involves using a "cursor" value to indicate the position in the dataset, which the client can pass to the server to fetch the next page of results.
+
 
 
 ====
@@ -185,7 +188,7 @@ GraphQL Subscriptions
 ======
   You can't do this in standalone apollo server. you need expressjs based app
   
-  npm install ws graphql-ws 
-  
+  npm install ws graphql-ws graphql-subscriptions
+
 
 

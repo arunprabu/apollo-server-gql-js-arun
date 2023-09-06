@@ -5,11 +5,11 @@ export const typeDefs = `#graphql
     age: Int
     posts(limit: Int!, offset: Int!): [Post]
     postById(id: Int): Post 
-    users: [User]
+    users(cursor: String, limit: Int): [User]
   }
 
   type User {
-    id: ID!
+    _id: ID!
     name: String!
     phone: String!
     email: String!
@@ -42,4 +42,25 @@ export const typeDefs = `#graphql
     email: String!
     phone: String!
   }
+
+  # the following has cursor pagination implemented
+  # type Photo {
+  #   id: ID!
+  #   title: String
+  # }
+
+  # type PageInfo {
+  #   hasNextPage: Boolean!
+  # }
+
+  # type PhotoEdge {
+  #   cursor: String!
+  #   node: Photo 
+  # }
+
+  # type PhotoConnection {
+  #   edges: [PhotoEdge!]!
+  #   pageInfo: PageInfo!
+  # }
 `;
+
