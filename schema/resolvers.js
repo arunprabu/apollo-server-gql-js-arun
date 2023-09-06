@@ -12,11 +12,6 @@ export const resolvers = {
     },
     posts: async (parent, { limit }) => {
       // // let connect to third party rest api endpoint
-      // const result = await axios.get(
-      //   "https://jsonplaceholder.typicode.com/posts"
-      // );
-      // console.log(result);
-      // return result.data;
       //Let's handle error and customize it
       try {
         let url =
