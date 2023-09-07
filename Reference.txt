@@ -230,3 +230,142 @@ GraphQL Subscriptions
   
 ========
 
+
+
+
+
+
+
+
+Here's an example of how to use Apollo Client in a React project to execute the `generateReport` mutation from your GraphQL schema:
+
+1. **Set Up Your React Project**:
+
+   If you haven't already, create a new React project or use an existing one. You can set up a new React project using Create React App:
+
+   ```bash
+   npx create-react-app graphql-apollo-client-example
+   cd graphql-apollo-client-example
+   ```
+
+2. **Install Dependencies**:
+
+   Install the necessary packages for Apollo Client and GraphQL:
+
+   ```bash
+   npm install @apollo/client graphql
+   ```
+
+3. **Set Up Apollo Client**:
+
+   In your project, create a file for configuring Apollo Client, typically named `apollo.js`:
+
+   ```javascript
+   // apollo.js
+   import { ApolloClient, InMemoryCache, HttpLink } from '@apollo/client';
+
+   const client = new ApolloClient({
+     link: new HttpLink({
+       uri: 'YOUR_GRAPHQL_ENDPOINT_HERE', // Replace with your GraphQL server endpoint
+     }),
+     cache: new InMemoryCache(),
+   });
+
+   export default client;
+   ```
+
+   Replace `'YOUR_GRAPHQL_ENDPOINT_HERE'` with the actual URL of your GraphQL server.
+
+4. **Create a Component for Mutation Execution**:
+
+   Create a React component where you'll execute the mutation. For example, let's create a `GenerateReport` component:
+
+   ```javascript
+   // GenerateReport.js
+   import React, { useState } from 'react';
+   import { useMutation } from '@apollo/client';
+   import GENERATE_REPORT_MUTATION from './generateReportMutation'; // Import your mutation
+
+   function GenerateReport() {
+     const [name, setName] = useState('');
+     const [result, setResult] = useState('');
+
+     const [generateReport] = useMutation(GENERATE_REPORT_MUTATION);
+
+     const handleGenerateReport = async () => {
+       try {
+         const { data } = await generateReport({
+           variables: {
+             name,
+           },
+         });
+         setResult(data.generateReport);
+       } catch (error) {
+         console.error('Error generating report:', error);
+       }
+     };
+
+     return (
+       <div>
+         <h2>Generate Report</h2>
+         <input
+           type="text"
+           placeholder="Report Name"
+           value={name}
+           onChange={(e) => setName(e.target.value)}
+         />
+         <button onClick={handleGenerateReport}>Generate Report</button>
+         {result && <p>Result: {result}</p>}
+       </div>
+     );
+   }
+
+   export default GenerateReport;
+   ```
+
+   In this component, we use the `useMutation` hook from Apollo Client to execute the `GENERATE_REPORT_MUTATION`. Make sure to import your actual mutation definition.
+
+5. **Create Your Mutation Definition**:
+
+   Create a separate file for your mutation definition. For example, in a file named `generateReportMutation.js`:
+
+   ```javascript
+   // generateReportMutation.js
+   import { gql } from '@apollo/client';
+
+   const GENERATE_REPORT_MUTATION = gql`
+     mutation GenerateReport($name: String) {
+       generateReport(name: $name)
+     }
+   `;
+
+   export default GENERATE_REPORT_MUTATION;
+   ```
+
+6. **Use the `GenerateReport` Component**:
+
+   Finally, use the `GenerateReport` component in your main application file (e.g., `App.js`):
+
+   ```javascript
+   // App.js
+   import React from 'react';
+   import { ApolloProvider } from '@apollo/client';
+   import client from './apollo'; // Import your Apollo Client configuration
+   import GenerateReport from './GenerateReport'; // Import your GenerateReport component
+
+   function App() {
+     return (
+       <ApolloProvider client={client}>
+         <div className="App">
+           <GenerateReport />
+         </div>
+       </ApolloProvider>
+     );
+   }
+
+   export default App;
+   ```
+
+   This code wraps your application with `ApolloProvider` and includes the `GenerateReport` component for executing the mutation.
+
+Now, when you run your React application (`npm start`), you can navigate to the `GenerateReport` component and use it to execute the `GENERATE_REPORT_MUTATION` to generate a report. Make sure to replace the GraphQL mutation and endpoint with your actual GraphQL schema and server details.
